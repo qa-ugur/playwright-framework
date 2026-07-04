@@ -14,7 +14,6 @@ public class BaseTest {
 
     @BeforeEach
     public void setUp() {
-
         browser = PlaywrightFactory.launchBrowser();
         playwright = PlaywrightFactory.getPlaywright();
 
@@ -24,8 +23,11 @@ public class BaseTest {
 
     @AfterEach
     public void tearDown() {
-        context.close();
-        browser.close();
-        playwright.close();
+        if (page != null) page.close();
+        if (context != null) context.close();
+        if (browser != null) browser.close();
+
+        // Playwright ve Browser thread referanslarını temizle
+        PlaywrightFactory.unload();
     }
 }

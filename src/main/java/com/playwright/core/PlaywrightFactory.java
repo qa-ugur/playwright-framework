@@ -4,40 +4,53 @@ import com.microsoft.playwright.*;
 
 public class PlaywrightFactory {
 
-    private static Playwright playwright;
-    private static Browser browser;
+    // Her thread'in kendi kopyasını tutması için ThreadLocal yapısına geçiyoruz
+    private static final ThreadLocal<Playwright> playwrightThread = new ThreadLocal<>();
+    private static final ThreadLocal<Browser> browserThread = new ThreadLocal<>();
 
     public static Browser launchBrowser() {
-
-        playwright = Playwright.create();
+        // Eğer bu thread için henüz Playwright başlatılmadıysa başlat
+        if (playwrightThread.get() == null) {
+            playwrightThread.set(Playwright.create());
+        }
 
         String browserType = ConfigReader.get("browser");
         boolean headless = Boolean.parseBoolean(ConfigReader.get("headless"));
 
+        Browser browserInstance;
         switch (browserType.toLowerCase()) {
-
             case "firefox":
-                browser = playwright.firefox().launch(
+                browserInstance = playwrightThread.get().firefox().launch(
                         new BrowserType.LaunchOptions().setHeadless(headless)
                 );
                 break;
-
             case "webkit":
-                browser = playwright.webkit().launch(
+                browserInstance = playwrightThread.get().webkit().launch(
                         new BrowserType.LaunchOptions().setHeadless(headless)
                 );
                 break;
-
             default:
-                browser = playwright.chromium().launch(
+                browserInstance = playwrightThread.get().chromium().launch(
                         new BrowserType.LaunchOptions().setHeadless(headless)
                 );
         }
 
-        return browser;
+        // Üretilen browser'ı bu thread'e özel olarak sakla
+        browserThread.set(browserInstance);
+        return browserInstance;
+    }
+
+    public static Browser getBrowser() {
+        return browserThread.get();
     }
 
     public static Playwright getPlaywright() {
-        return playwright;
+        return playwrightThread.get();
+    }
+
+    // Paralel testlerde bellek sızıntısını (Memory Leak) önlemek için temizlik metodu
+    public static void unload() {
+        browserThread.remove();
+        playwrightThread.remove();
     }
 }
