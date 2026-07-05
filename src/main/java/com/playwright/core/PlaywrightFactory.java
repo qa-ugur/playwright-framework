@@ -21,17 +21,23 @@ public class PlaywrightFactory {
         switch (browserType.toLowerCase()) {
             case "firefox":
                 browserInstance = playwrightThread.get().firefox().launch(
-                        new BrowserType.LaunchOptions().setHeadless(headless)
+                        new BrowserType.LaunchOptions()
+                                .setHeadless(headless)
+                                .setSlowMo(800) // 800 milisaniye (0.8 saniye) her işleme default bekleme ekler
                 );
                 break;
             case "webkit":
                 browserInstance = playwrightThread.get().webkit().launch(
-                        new BrowserType.LaunchOptions().setHeadless(headless)
+                        new BrowserType.LaunchOptions()
+                                .setHeadless(headless)
+                                .setSlowMo(800)
                 );
                 break;
             default:
                 browserInstance = playwrightThread.get().chromium().launch(
-                        new BrowserType.LaunchOptions().setHeadless(headless)
+                        new BrowserType.LaunchOptions()
+                                .setHeadless(headless)
+                                .setSlowMo(800) // Her tıklama ve yazı yazma arasına 0.8 saniye koyar
                 );
         }
 

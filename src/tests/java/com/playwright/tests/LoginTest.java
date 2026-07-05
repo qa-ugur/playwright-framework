@@ -19,7 +19,7 @@ public class LoginTest extends BaseTest {
                 ConfigReader.get("username"),
                 ConfigReader.get("password")
         );
-
+        page.waitForTimeout(4000); // 4 saniye ekranı açık tutar
         // basic assertion
         Assertions.assertTrue(page.url().contains("dashboard"));
     }
