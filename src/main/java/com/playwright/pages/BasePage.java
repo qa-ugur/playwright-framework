@@ -1,6 +1,7 @@
 package com.playwright.pages;
 
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Locator;
 
 public class BasePage {
 
@@ -30,9 +31,18 @@ public class BasePage {
         page.click(selector);
     }
 
+    public void click(Locator locator) {
+        locator.click();
+    }
+
     // fill
     public void fill(String selector, String value) {
         page.fill(selector, value);
+    }
+
+    // Overloading (Tek bir tane Locator kabul eden fill metodu yeterlidir)
+    public void fill(Locator locator, String value) {
+        locator.fill(value);
     }
 
     // get text

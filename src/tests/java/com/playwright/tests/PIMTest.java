@@ -22,12 +22,34 @@ public class PIMTest extends BaseTest {
         PIMPage pimPage = dashboardPage.clickPIMMenu();
 
         // 3. Yeni Çalışan Ekle
-        pimPage.addEmployee("User1", "Test");
+        pimPage.navigateToAddEmployee();
+        pimPage.addEmployee("Max", "Mustermann");
 
         // 4. Doğrulama (Assertion): Kayıt başarılı oldu bildirimi geldi mi?
-        Assertions.assertTrue(pimPage.isSuccessMessageVisible(), "Çalışan eklenirken hata oluştu veya bildirim görünmedi!");
+        Assertions.assertTrue(pimPage.isSuccessToastVisible(), "Çalışan eklenirken hata oluştu veya bildirim görünmedi!");
 
         // Gözümüzle görmek için 3 saniye bekletelim
+        page.waitForTimeout(3000);
+    }
+
+    @Test
+    public void testSearchEmployee() {
+    // 1. Giriş Yap
+    page.navigate(ConfigReader.get("baseUrl"));
+    LoginPage loginPage = new LoginPage(page);
+    loginPage.login(ConfigReader.get("username"), ConfigReader.get("password"));
+
+     // 2. Dashboard Sayfasından PIM Menüsüne Geç
+     DashboardPage dashboardPage = new DashboardPage(page);
+     PIMPage pimPage = dashboardPage.clickPIMMenu();
+
+        // 3. Employee List sekmesine tıkla (Metodu çağırıyoruz, tırnak içinde değişken değil!)
+        pimPage.clickEmployeeListTab();
+
+        // 4. Şimdi arama yapalım
+        pimPage.searchEmployee("Max"); // Aramak istediğin ismi buraya yazabilirsin
+
+        // 5. Gözümüzle görmek için 3 saniye beklet
         page.waitForTimeout(3000);
     }
 }
