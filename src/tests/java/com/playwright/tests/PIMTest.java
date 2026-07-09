@@ -21,9 +21,19 @@ public class PIMTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(page);
         PIMPage pimPage = dashboardPage.clickPIMMenu();
 
-        // 3. Yeni Çalışan Ekle
+        // --- YENİ EKLEME: Benzersiz (Unique) İsim Üretme ---
+        // Java ile o anki zamanın son 5 hanesini alıyoruz (Örn: 56789)
+        String uniqueId = String.valueOf(System.currentTimeMillis());
+        uniqueId = uniqueId.substring(uniqueId.length() - 5);
+
+        // Her çalıştığında "Max56789" ve "Mustermann56789" gibi benzersiz isimler oluşacak
+        String dynamicFirstName = "Max" + uniqueId;
+        String dynamicLastName = "Mustermann" + uniqueId;
+        // ---------------------------------------------------
+
+        // 3. Yeni Çalışan Ekle (Dinamik isimleri gönderiyoruz)
         pimPage.navigateToAddEmployee();
-        pimPage.addEmployee("Max", "Mustermann");
+        pimPage.addEmployee(dynamicFirstName, dynamicLastName);
 
         // 4. Doğrulama (Assertion): Kayıt başarılı oldu bildirimi geldi mi?
         Assertions.assertTrue(pimPage.isSuccessToastVisible(), "Çalışan eklenirken hata oluştu veya bildirim görünmedi!");
